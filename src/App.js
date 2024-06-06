@@ -1,25 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { useState } from "react";
+import BookShelfList from "./BookShelfList";
+
 
 function App() {
+  const [showSearchPage, setShowSearchpage] = useState(false);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+    <div className="app">
+      {showSearchPage ? (
+        <div className="search-books">
+          <div className="search-books-bar">
+            <a
+              className="close-search"
+              onClick={() => setShowSearchpage(!showSearchPage)}
+            >
+              Close
+            </a>
+            <div className="search-books-input-wrapper">
+              <input
+                type="text"
+                placeholder="Search by title, author, or ISBN"
+              />
+            </div>
+          </div>
+          <div className="search-books-results">
+            <ol className="books-grid"></ol>
+          </div>
+        </div>
+      ) : (
+        <div>
+        <BookShelfList />
+          <div className="open-search">
+            <a onClick={() => setShowSearchpage(!showSearchPage)}>Add a book</a>
+          </div>
+
+      </div>
+      )}
+</div>
+  )}
 
 export default App;
