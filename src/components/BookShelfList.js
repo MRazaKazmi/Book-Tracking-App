@@ -1,23 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import BookShelf from './BookShelf';
-import { getAll } from './BooksAPI';
-
-const BookShelfList = () => {
-  const [books, setBooks] = useState([]);
-
-  useEffect(() => {
-    const getBooks = async () => {
-      const res = await getAll();
-      setBooks(res);
-    };
-
-    getBooks();
-  }, []);
+import { Link } from 'react-router-dom';
 
 
-  const changeShelf = (book, newShelf) => {
-    setBooks(books.map(b => (b.id === book.id ? { ...b, shelf: newShelf } : b)));
-  };
+const BookShelfList = ({ books, changeShelf }) => {
 
   const shelves = [
     { title: 'Currently Reading', id: 'currentlyReading' },
@@ -42,6 +28,9 @@ const BookShelfList = () => {
           onChangeShelf={changeShelf}
         />
       ))}
+      <div className="open-search">
+        <Link to="/search" className="close-search">Add a book</Link>
+      </div>
     </div>
     </div>
   );
