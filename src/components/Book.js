@@ -1,10 +1,22 @@
 import React from "react";
+import PropTypes from 'prop-types';
+
 
 const Book = ({ book, onChangeShelf }) => {
 
     const handleShelfChange = (event) => {
         onChangeShelf(book, event.target.value);
       };
+
+    const thumbnail = book.imageLinks && book.imageLinks.thumbnail ? book.imageLinks.thumbnail : '';
+
+    const shelfOptions = [
+        { shelfName: 'currentlyReading', shelfDisplayName: 'Currently Reading' },
+        { shelfName: 'wantToRead', shelfDisplayName: 'Want to Read' },
+        { shelfName: 'read', shelfDisplayName: 'Read' },
+        { shelfName: 'none', shelfDisplayName: 'None' }
+      ];
+
     return(
     <li>
     <div className="book">
@@ -15,7 +27,7 @@ const Book = ({ book, onChangeShelf }) => {
                 width: 128,
                 height: 193,
                 backgroundImage:
-                `url(${book.imageLinks.thumbnail})`,
+                `url(${thumbnail})`,
             }}
             ></div>
             <div className="book-shelf-changer">
@@ -23,12 +35,9 @@ const Book = ({ book, onChangeShelf }) => {
                 <option value="none" disabled>
                 Move to...
                 </option>
-                <option value="currentlyReading">
-                Currently Reading
-                </option>
-                <option value="wantToRead">Want to Read</option>
-                <option value="read">Read</option>
-                <option value="none">None</option>
+                {shelfOptions.map(option => (
+                <option key={option.shelfName} value={option.shelfName}>{option.shelfDisplayName}</option>
+            ))}
             </select>
             </div>
         </div>
@@ -36,6 +45,19 @@ const Book = ({ book, onChangeShelf }) => {
         <div className="book-authors">{book.authors}</div>
     </div>
     </li>
-    )}
+    )};
+
+Book.propTypes = {
+    book: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        title: PropTypes.string.isRequired,
+        authors: PropTypes.arrayOf(PropTypes.string).isRequired,
+        imageLinks: PropTypes.shape({
+        thumbnail: PropTypes.string,
+        }),
+        shelf: PropTypes.string,
+    }).isRequired,
+    onChangeShelf: PropTypes.func.isRequired,
+    };
 
 export default Book;

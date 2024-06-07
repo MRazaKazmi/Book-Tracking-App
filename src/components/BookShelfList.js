@@ -1,6 +1,7 @@
 import React from 'react';
 import BookShelf from './BookShelf';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 
 const BookShelfList = ({ books, changeShelf }) => {
@@ -34,6 +35,19 @@ const BookShelfList = ({ books, changeShelf }) => {
     </div>
     </div>
   );
+};
+
+BookShelfList.propTypes = {
+  books: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    authors: PropTypes.arrayOf(PropTypes.string).isRequired,
+    imageLinks: PropTypes.shape({
+      thumbnail: PropTypes.string,
+    }),
+    shelf: PropTypes.string,
+  })).isRequired,
+  changeShelf: PropTypes.func.isRequired,
 };
 
 export default BookShelfList;

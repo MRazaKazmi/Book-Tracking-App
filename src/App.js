@@ -2,7 +2,7 @@ import "./App.css";
 import BookShelfList from "./components/BookShelfList";
 import { Route, Routes } from 'react-router-dom';
 import SearchBooks from './components/SearchBooks';
-import { getAll } from './BooksAPI';
+import { getAll, update } from './BooksAPI';
 import React, { useState, useEffect } from 'react';
 
 
@@ -18,18 +18,19 @@ import React, { useState, useEffect } from 'react';
         getBooks();
       }, []);
 
-    const changeShelf = (book, newShelf) => {
-        setBooks(prevBooks => {
-          const updatedBooks = prevBooks.map(b =>
-            b.id === book.id ? { ...b, shelf: newShelf } : b
-          );
-          if (!updatedBooks.find(b => b.id === book.id)) {
-            book.shelf = newShelf;
-            updatedBooks.push(book);
-          }
-          return updatedBooks;
-        });
-      };
+    const changeShelf = async (book, newShelf) => {
+      await update(book, newShelf);
+      setBooks(prevBooks => {
+        const updatedBooks = prevBooks.map(b =>
+          b.id === book.id ? { ...b, shelf: newShelf } : b
+        );
+        if (!updatedBooks.find(b => b.id === book.id)) {
+          book.shelf = newShelf;
+          updatedBooks.push(book);
+        }
+        return updatedBooks;
+      });
+    };
 
     return (
         <div className="app">

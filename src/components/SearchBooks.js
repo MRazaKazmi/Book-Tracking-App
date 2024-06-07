@@ -1,19 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Book from './Book';
-import { search } from '../BooksAPI';
+import { search, getAll } from '../BooksAPI';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 
 const SearchBooks = ({ changeShelf }) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
+  const [shelfBooks, setShelfBooks] = useState([]);
+
+  useEffect(() => {
+    const loadShelfBooks = async () => {
+      const sbooks = await getAll();
+      setShelfBooks(sbooks);
+    };
+    loadShelfBooks();
+  }, []);
 
   const handleSearch = async (event) => {
     const value = event.target.value;
     setQuery(value);
     if (value) {
       const books = await search(value);
-      setResults(books);
+      if (books) {
+        const updatedResults = books.map(book => {
+          const matchingBook = shelfBooks.find(shelfBook => shelfBook.id === book.id);
+          if (matchingBook) {
+            book.shelf = matchingBook.shelf;
+          }
+          return book;
+        });
+        setResults(updatedResults);
+      } else {
+        setResults([]);
+      }
     } else {
       setResults([]);
     }
@@ -45,6 +66,10 @@ const SearchBooks = ({ changeShelf }) => {
       </div>
     </div>
   );
+};
+
+SearchBooks.propTypes = {
+  changeShelf: PropTypes.func.isRequired,
 };
 
 export default SearchBooks;
