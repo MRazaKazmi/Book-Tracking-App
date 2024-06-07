@@ -13,17 +13,21 @@ const SearchBooks = ({ changeShelf }) => {
   useEffect(() => {
     const loadShelfBooks = async () => {
       const sbooks = await getAll();
-      setShelfBooks(sbooks);
+      if (sbooks && Array.isArray(sbooks)) {
+        setShelfBooks(sbooks);
+      } else {
+        console.error('fetchBooks did not return an object with a books array');
+      }
     };
     loadShelfBooks();
   }, []);
 
   const handleSearch = async (event) => {
-    const value = event.target.value;
+    const value = event.target.value.trim();
     setQuery(value);
     if (value) {
       const books = await search(value);
-      if (books) {
+      if (books && Array.isArray(books)) {
         const updatedResults = books.map(book => {
           const matchingBook = shelfBooks.find(shelfBook => shelfBook.id === book.id);
           if (matchingBook) {
@@ -60,7 +64,7 @@ const SearchBooks = ({ changeShelf }) => {
             <Book key={book.id} book={book} onChangeShelf={changeShelf} />
           ))
         ) : (
-          <p>No results found</p>
+          query && <p>No results found</p>
         )}
         </ol>
       </div>
